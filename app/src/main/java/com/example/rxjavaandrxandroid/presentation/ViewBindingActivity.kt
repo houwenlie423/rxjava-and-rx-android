@@ -21,6 +21,11 @@ abstract class ViewBindingActivity<VB : ViewBinding> : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
         init(savedInstanceState, persistentState)
+        init()
+    }
+
+    open fun init() {
+        // no implementation on base
     }
 
     open fun init(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
