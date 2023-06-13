@@ -1,7 +1,6 @@
 package com.example.rxjavaandrxandroid.presentation
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.viewbinding.ViewBinding
 import io.reactivex.disposables.CompositeDisposable
@@ -18,10 +17,10 @@ abstract class ViewBindingActivity<VB : ViewBinding> : ComponentActivity() {
 
     protected val disposeBag by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { CompositeDisposable() }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        init(savedInstanceState, persistentState)
+        init(savedInstanceState)
         init()
     }
 
@@ -29,7 +28,7 @@ abstract class ViewBindingActivity<VB : ViewBinding> : ComponentActivity() {
         // no implementation on base
     }
 
-    open fun init(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+    open fun init(savedInstanceState: Bundle?) {
         // no implementation on base
     }
 

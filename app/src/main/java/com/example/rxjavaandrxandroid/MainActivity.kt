@@ -3,8 +3,10 @@ package com.example.rxjavaandrxandroid
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
 import com.example.rxjavaandrxandroid.presentation.ViewBindingActivity
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 /**
@@ -17,7 +19,9 @@ class MainActivity : ViewBindingActivity<ActivityMainBinding>() {
     override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
     override fun init() {
-        Observable.interval(0L, 3L, TimeUnit.SECONDS)
+        Observable.interval(0L, 1L, TimeUnit.SECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onNext = {
                     binding.tvTitle.text = it.toString()
