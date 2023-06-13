@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.RxJavaAndRxAndroid" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:colorPrimary">@color/purple_700</item>
+        <item name="android:colorPrimaryDark">@color/purple_700</item>
+    </style>
+</resources>
