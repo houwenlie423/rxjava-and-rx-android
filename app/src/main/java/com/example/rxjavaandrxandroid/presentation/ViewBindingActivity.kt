@@ -20,6 +20,7 @@ abstract class ViewBindingActivity<VB : ViewBinding> : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
+        setContentView(binding.root)
         init(savedInstanceState, persistentState)
         init()
     }
