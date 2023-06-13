@@ -14,7 +14,7 @@ abstract class ViewBindingActivity<VB: ViewBinding> : ComponentActivity() {
 
     protected val binding: VB by lazy(LazyThreadSafetyMode.NONE) { inflateViewBinding() }
 
-    protected val disposeBag by lazy(LazyThreadSafetyMode.NONE) { CompositeDisposable() }
+    protected val disposeBag by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { CompositeDisposable() }
 
     override fun onDestroy() {
         super.onDestroy()
