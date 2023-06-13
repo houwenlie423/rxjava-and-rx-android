@@ -1,21 +1,15 @@
 package com.example.rxjavaandrxandroid
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
+import com.example.rxjavaandrxandroid.presentation.ViewBindingActivity
 
 /**
  * @author Houwen Lie (houwenlie98@gmail.com)
  * @version asd, v 0.1 Tue 6/13/2023 7:05 PM by Houwen Lie
  */
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ViewBindingActivity<ActivityMainBinding>() {
 
-    private lateinit var binding: ActivityMainBinding
+    override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-    }
 }
