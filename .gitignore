@@ -2,6 +2,7 @@
 .gradle
 /local.properties
 build.gradle
+/app/proguard-rules.pro
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
