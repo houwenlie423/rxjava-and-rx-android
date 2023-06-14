@@ -1,4 +1,4 @@
-package com.example.rxjavaandrxandroid
+package com.example.rxjavaandrxandroid.presentation.activity
 
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
 import com.example.rxjavaandrxandroid.presentation.RxViewBindingActivity
