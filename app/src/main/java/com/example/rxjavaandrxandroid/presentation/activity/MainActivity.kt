@@ -1,7 +1,7 @@
 package com.example.rxjavaandrxandroid.presentation.activity
 
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
-import com.example.rxjavaandrxandroid.presentation.RxViewBindingActivity
+import com.example.rxjavaandrxandroid.presentation.base.RxViewBindingActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
