@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
  * @author Houwen Lie (houwenlie98@gmail.com)
  * @version ViewBindingActivity, v 0.1 Tue 6/13/2023 7:05 PM by Houwen Lie
  */
-abstract class ViewBindingActivity<VB : ViewBinding> : ComponentActivity() {
+abstract class RxViewBindingActivity<VB : ViewBinding> : ComponentActivity() {
 
     abstract fun inflateViewBinding(): VB
 

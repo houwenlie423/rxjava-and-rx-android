@@ -1,7 +1,7 @@
 package com.example.rxjavaandrxandroid
 
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
-import com.example.rxjavaandrxandroid.presentation.ViewBindingActivity
+import com.example.rxjavaandrxandroid.presentation.RxViewBindingActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
  * @version MainActivity, v 0.1 Tue 6/13/2023 7:05 PM by Houwen Lie
  */
 
-class MainActivity : ViewBindingActivity<ActivityMainBinding>() {
+class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
     override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
