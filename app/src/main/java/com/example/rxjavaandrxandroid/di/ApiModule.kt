@@ -13,10 +13,14 @@ import retrofit2.Retrofit.Builder
 object ApiModule {
 
     fun provideGithubApi(builder: Retrofit.Builder): GithubApi {
-        // TODO -> Inject Retrofit and create GithubApi
+        return builder.baseUrl("TODO -> Github Base URL")
+            .build()
+            .create(GithubApi::class.java)
     }
 
     fun provideNasaApi(builder: Builder): NasaApi {
-        // TODO -> Inject Retrofit and create NasaApi
+        return builder.baseUrl("TODO -> Nasa Base URL")
+            .build()
+            .create(NasaApi::class.java)
     }
 }
