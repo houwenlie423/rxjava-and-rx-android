@@ -1,7 +1,9 @@
 package com.example.rxjavaandrxandroid.presentation.activity
 
+import androidx.activity.viewModels
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
 import com.example.rxjavaandrxandroid.presentation.base.RxViewBindingActivity
+import com.example.rxjavaandrxandroid.presentation.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,9 +20,12 @@ import java.util.concurrent.TimeUnit
 @AndroidEntryPoint
 class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
+    private val viewModel by viewModels<MainViewModel>()
+
     override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
     override fun init() {
+        viewModel.doSomething()
         Observable.interval(0L, 1L, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
