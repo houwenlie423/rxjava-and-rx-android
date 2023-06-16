@@ -24,16 +24,6 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
     override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
-    override fun init() {
-        viewModel.doSomething()
-        Observable.interval(0L, 1L, TimeUnit.SECONDS)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-                onNext = {
-                    binding.tvTitle.text = it.toString()
-                }
-            )
-            .addTo(disposeBag)
-    }
+
+
 }

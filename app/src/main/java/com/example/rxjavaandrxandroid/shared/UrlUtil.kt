@@ -7,5 +7,5 @@ package com.example.rxjavaandrxandroid.shared
  */
 object UrlUtil {
 
-    const val GITHUB_API_BASE_URL = "https://api.github.com/octocat"
+    const val NASA_API_BASE_URL = "https://eonet.gsfc.nasa.gov/api/v2.1/"
 }
