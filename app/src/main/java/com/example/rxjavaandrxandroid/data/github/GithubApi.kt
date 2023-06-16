@@ -3,6 +3,7 @@ package com.example.rxjavaandrxandroid.data.github
 import android.database.Observable
 import com.example.rxjavaandrxandroid.data.github.model.GithubEventDto
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 
 

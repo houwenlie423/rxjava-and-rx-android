@@ -24,7 +24,7 @@ android {
         Properties properties = new Properties()
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
-        buildConfig "String", "GITHUB_API_KEY", "\"${properties.getProperty("GITHUB_API_KEY")}\""
+        buildConfigField "String", "GITHUB_API_KEY", "\"${properties.getProperty("GITHUB_API_KEY")}\""
     }
 
     buildTypes {
@@ -41,6 +41,7 @@ android {
         jvmTarget = '17'
     }
     buildFeatures {
+        buildConfig true
         viewBinding true
         compose false
     }
