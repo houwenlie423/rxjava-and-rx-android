@@ -1,6 +1,9 @@
 package com.example.rxjavaandrxandroid.presentation.viewmodel
 
+import android.util.Log
 import com.example.rxjavaandrxandroid.presentation.base.RxViewModel
+import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -9,5 +12,13 @@ import com.example.rxjavaandrxandroid.presentation.base.RxViewModel
  */
 class MainViewModel() : RxViewModel() {
 
+
+    fun getUserIds(): Observable<List<Int>> {
+        return Observable.fromCallable {
+            Log.d("RxApp", "GET USER ID")
+            listOf(1, 2, 3)
+        }
+            .delay(3, TimeUnit.SECONDS)
+    }
 
 }
