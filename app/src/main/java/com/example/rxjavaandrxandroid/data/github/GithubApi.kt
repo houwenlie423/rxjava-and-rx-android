@@ -1,5 +1,10 @@
 package com.example.rxjavaandrxandroid.data.github
 
+import android.database.Observable
+import com.example.rxjavaandrxandroid.data.github.model.GithubEventDto
+import retrofit2.http.GET
+import retrofit2.http.Path
+
 
 /**
  * @author Houwen Lie (houwenlie98@gmail.com)
@@ -7,5 +12,8 @@ package com.example.rxjavaandrxandroid.data.github
  */
 interface GithubApi {
 
-
+    @GET("repos/ReactiveX/{repo}/events")
+    fun fetchEvents(
+        @Path("repo") repo: String
+    ): Observable<List<GithubEventDto>>
 }
