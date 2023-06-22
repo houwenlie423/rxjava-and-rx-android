@@ -1,16 +1,9 @@
-package com.example.rxjavaandrxandroid.presentation.activity
+package com.example.rxjavaandrxandroid
 
 import androidx.activity.viewModels
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
-import com.example.rxjavaandrxandroid.presentation.base.RxViewBindingActivity
-import com.example.rxjavaandrxandroid.presentation.viewmodel.MainViewModel
+import com.example.rxjavaandrxandroid.base.RxViewBindingActivity
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 /**
  * @author Houwen Lie (houwenlie98@gmail.com)

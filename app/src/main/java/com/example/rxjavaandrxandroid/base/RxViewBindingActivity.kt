@@ -1,4 +1,4 @@
-package com.example.rxjavaandrxandroid.presentation.base
+package com.example.rxjavaandrxandroid.base
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

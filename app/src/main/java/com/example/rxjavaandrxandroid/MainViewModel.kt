@@ -1,7 +1,7 @@
-package com.example.rxjavaandrxandroid.presentation.viewmodel
+package com.example.rxjavaandrxandroid
 
 import android.util.Log
-import com.example.rxjavaandrxandroid.presentation.base.RxViewModel
+import com.example.rxjavaandrxandroid.base.RxViewModel
 import com.example.rxjavaandrxandroid.shared.applySchedulers
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
