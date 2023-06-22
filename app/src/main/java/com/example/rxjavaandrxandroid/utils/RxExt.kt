@@ -1,4 +1,4 @@
-package com.example.rxjavaandrxandroid.shared
+package com.example.rxjavaandrxandroid.utils
 
 import io.reactivex.Observable
 import io.reactivex.Single

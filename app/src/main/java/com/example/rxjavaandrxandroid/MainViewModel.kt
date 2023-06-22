@@ -2,7 +2,7 @@ package com.example.rxjavaandrxandroid
 
 import android.util.Log
 import com.example.rxjavaandrxandroid.base.RxViewModel
-import com.example.rxjavaandrxandroid.shared.applySchedulers
+import com.example.rxjavaandrxandroid.utils.applySchedulers
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
