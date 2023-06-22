@@ -24,6 +24,10 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
     override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
-
+    override fun init() {
+        super.init()
+//        viewModel.getUsers()
+        viewModel.getNumber()
+    }
 
 }
