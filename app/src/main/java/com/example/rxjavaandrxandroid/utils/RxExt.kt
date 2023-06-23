@@ -53,11 +53,11 @@ inline fun <reified T> Observable<T>.execute(
     this.applySchedulers(threadExecutor, postThreadExecutor)
         .subscribeByAutoDispose(
             onNext = {
-                LogUtil.log("[${T::class.simpleName}] Success = $t")
+                LogUtil.log("[${T::class.simpleName}] Success = $it")
                 onSuccess(it)
             },
             onError = {
-                LogUtil.log("[${T::class.simpleName}] Success = $t")
+                LogUtil.log("[${T::class.simpleName}] Error = $it")
                 onError(it)
             }
         )
