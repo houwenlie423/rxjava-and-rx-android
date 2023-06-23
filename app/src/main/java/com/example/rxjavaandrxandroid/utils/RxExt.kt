@@ -21,6 +21,29 @@ fun <T> Observable<T>.applySchedulers(
     postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
 ): Observable<T> = this.subscribeOn(threadExecutor).observeOn(postThreadExecutor)
 
+fun <T> Observable<T>.subscribeByAutoDispose(
+    onNext: (T) -> Unit = {},
+    onError: (Throwable) -> Unit = {},
+    onComplete: () -> Unit = {}
+) {
+    this.subscribe(object: DisposableObserver<T>() {
+        override fun onNext(t: T) {
+            onNext(t)
+            dispose()
+        }
+
+        override fun onError(e: Throwable) {
+            onError(e)
+            dispose()
+        }
+
+        override fun onComplete() {
+            onComplete()
+            dispose()
+        }
+    })
+}
+
 inline fun <reified T> Observable<T>.execute(
     crossinline onSuccess: (T) -> Unit = {},
     crossinline onError: (Throwable) -> Unit = {},
@@ -28,25 +51,16 @@ inline fun <reified T> Observable<T>.execute(
     postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
 ) {
     this.applySchedulers(threadExecutor, postThreadExecutor)
-        .subscribe(object: DisposableObserver<T>() {
-            override fun onNext(t: T) {
+        .subscribeByAutoDispose(
+            onNext = {
                 LogUtil.log("[${T::class.simpleName}] Success = $t")
-                onSuccess(t)
-                dispose()
+                onSuccess(it)
+            },
+            onError = {
+                LogUtil.log("[${T::class.simpleName}] Success = $t")
+                onError(it)
             }
-
-            override fun onError(e: Throwable) {
-                LogUtil.log("[${T::class.simpleName}] Error = ${e.message}")
-                onError(e)
-                dispose()
-            }
-
-            override fun onComplete() {
-                LogUtil.log("[${T::class.simpleName}] Complete")
-                dispose()
-            }
-
-        })
+        )
 }
 
 fun <T> Observable<T>.collectAsSingle(): Single<T> {
