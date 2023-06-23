@@ -2,17 +2,23 @@ package com.example.rxjavaandrxandroid
 
 import android.util.Log
 import com.example.rxjavaandrxandroid.base.RxViewModel
+import com.example.rxjavaandrxandroid.usecases.LoopChain
 import com.example.rxjavaandrxandroid.utils.applySchedulers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 /**
  * @author Houwen Lie (houwenlie98@gmail.com)
  * @version MainViewModel, v 0.1 Thu 6/15/2023 3:29 PM by Houwen Lie
  */
-class MainViewModel() : RxViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val loopChain: LoopChain
+) : RxViewModel() {
 
 
     fun getNumber() {
@@ -51,53 +57,6 @@ class MainViewModel() : RxViewModel() {
         } else {
             fibRecursive(num - 2) + fibRecursive(num - 1)
         }
-    }
-
-    fun getUsers() {
-//        Works -> executions of getUser() are done concurrently
-        getUserIds()
-            .flatMapIterable { it }
-            .flatMap { userId -> getUser(userId) }
-            .toList()
-            .toObservable()
-            .applySchedulers()
-            .subscribe { users -> Log.d("RxApp", "Users = $users") }
-            .addTo(disposeBag)
-
-//        This also works concurrently
-//        getUserIds()
-//            .flatMap { userIds ->
-//                Observable.zip(
-//                    userIds.map { getUser(it) }.asIterable()
-//                ) {
-//                    it as List<User>
-//                }
-//            }.applySchedulers()
-//            .subscribe { users -> Log.d("RxApp", "Users = $users") }
-//            .addTo(disposeBag)
-
-//        THIS ALSO  WORKS, I guess it's quite identical to first one
-//        getUserIds()
-//            .flatMap { userIds ->
-//                Observable.fromIterable(userIds)
-//                    .flatMap { userId -> getUser(userId) }
-//                    .toList()
-//                    .toObservable()
-//            }
-//            .applySchedulers()
-//            .subscribe { users -> Log.d("RxApp", "Users = $users") }
-//            .addTo(disposeBag)
-
-
-//        Sequentially -> executions of getUser() are done sequentially one by one
-//        getUserIds()
-//            .flatMapIterable { it }
-//            .concatMap { getUser(it) }
-//            .toList()
-//            .toObservable()
-//            .applySchedulers()
-//            .subscribe { users -> Log.d("RxApp", "Users = $users") }
-//            .addTo(disposeBag)
     }
 
     private fun getUserIds(): Observable<List<Int>> {

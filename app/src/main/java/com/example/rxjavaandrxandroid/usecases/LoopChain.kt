@@ -1,6 +1,9 @@
 package com.example.rxjavaandrxandroid.usecases
 
+import com.example.rxjavaandrxandroid.User
 import com.example.rxjavaandrxandroid.api.FakeApi
+import com.example.rxjavaandrxandroid.models.FakeUser
+import io.reactivex.Observable
 import javax.inject.Inject
 
 
@@ -11,4 +14,33 @@ import javax.inject.Inject
 class LoopChain @Inject constructor(
     private val fakeApi: FakeApi
 ) {
+
+    fun getUsersConcurrently(): Observable<List<FakeUser>> {
+        return fakeApi.getUserIds()
+            .flatMapIterable { it }
+            .flatMap { userId -> fakeApi.getUser(userId) }
+            .toList()
+            .toObservable()
+    }
+
+    fun getUsersConcurrentLyWithZip(): Observable<List<FakeUser>> {
+        return fakeApi.getUserIds()
+            .flatMap { userIds ->
+                Observable.zip(
+                    userIds.map { fakeApi.getUser(it) }.asIterable()
+                ) {
+                    it as List<FakeUser>
+                }
+            }
+    }
+
+    fun getUsersSequentially(): Observable<List<FakeUser>> {
+        return fakeApi.getUserIds()
+            .flatMapIterable { it }
+            .concatMap { userId -> fakeApi.getUser(userId) }
+            .toList()
+            .toObservable()
+    }
+
+
 }
