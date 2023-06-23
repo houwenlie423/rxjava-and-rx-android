@@ -41,4 +41,25 @@ inline fun <reified T> Observable<T>.execute(
         })
 }
 
+fun <T> Observable<T>.collectAsSingle(): Single<T> {
+    return Single.create { emitter ->
+        subscribe(object: DisposableObserver<T>() {
+            override fun onNext(t: T) {
+                emitter.onSuccess(t)
+                dispose()
+            }
+
+            override fun onError(e: Throwable) {
+                emitter.onError(e)
+                dispose()
+            }
+
+            override fun onComplete() {
+                dispose()
+            }
+
+        })
+    }
+}
+
 fun <T> Single<T>.applySchedulers() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
