@@ -63,3 +63,10 @@ fun <T> Observable<T>.collectAsSingle(): Single<T> {
 }
 
 fun <T> Single<T>.applySchedulers() = this.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+
+inline fun <reified T> Single<T>.execute(
+    crossinline onSuccess: (T) -> Unit = {},
+    crossinline onError: (Throwable) -> Unit = {},
+) {
+    this.toObservable().execute(onSuccess, onError)
+}
