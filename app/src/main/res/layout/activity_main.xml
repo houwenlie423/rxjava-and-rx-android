@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/btn_navigate"
         android:text="Go to Secondary Activity"
         android:textColor="@color/white"
         android:backgroundTint="@color/purple_500"
