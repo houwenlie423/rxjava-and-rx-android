@@ -15,7 +15,6 @@ class SecondaryActivity : RxViewBindingActivity<ActivitySecondaryBinding>() {
     override fun init() {
         binding.btnBack.setOnClickListener {
             Intent(this, MainActivity::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 putExtra("codeValue", "42069")
                 startActivity(this)
             }

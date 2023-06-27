@@ -26,11 +26,24 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
                 startActivity(it)
             }
         }
+        processExtraData()
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        setIntent(intent)
         LogUtil.log("onNewIntent : $intent")
+    }
+
+    private fun processExtraData() {
+        intent?.let { intent ->
+            val codeValue = intent.getStringExtra("codeValue").orEmpty()
+            if (codeValue.isNotEmpty()) updateTextWithCodeValue(codeValue)
+        }
+    }
+
+    private fun updateTextWithCodeValue(codeValue: String) {
+        binding.tvTitle.text = codeValue
     }
 
 }

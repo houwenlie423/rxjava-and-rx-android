@@ -1,6 +1,5 @@
 package com.example.rxjavaandrxandroid.usecases
 
-import com.example.rxjavaandrxandroid.User
 import com.example.rxjavaandrxandroid.api.FakeApi
 import com.example.rxjavaandrxandroid.models.FakeUser
 import io.reactivex.Observable
