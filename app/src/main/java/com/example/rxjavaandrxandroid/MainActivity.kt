@@ -22,9 +22,17 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
     override fun init() {
         // Due to bug described below, activity gets re-created and #onCreate gets executed again
         LogUtil.log("onCreate : $intent")
-        binding.btnNavigate.setOnClickListener {
-            Intent(this, SecondaryActivity::class.java).also {
-                startActivity(it)
+        binding.apply {
+            btnStay.setOnClickListener {
+                Intent(this@MainActivity, MainActivity::class.java).apply {
+                    putExtra("codeValue", "42069")
+                    startActivity(this)
+                }
+            }
+            btnNavigate.setOnClickListener {
+                Intent(this@MainActivity, SecondaryActivity::class.java).also {
+                    startActivity(it)
+                }
             }
         }
         processExtraData()
@@ -33,11 +41,12 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
     override fun onNewIntent(intent: Intent?) {
         // #onNewIntent is not executed despite having singleTop launchMode for this activity, Intent sender needs to also addFlag Intent.FLAG_ACTIVITY_CLEAR_TOP
         // See : https://issuetracker.google.com/issues/36928971
+        LogUtil.log("onNewIntent : $intent")
         super.onNewIntent(intent)
 
         // Solution from : http://www.helloandroid.com/tutorials/communicating-between-running-activities
         setIntent(intent)
-        LogUtil.log("onNewIntent : $intent")
+        processExtraData()
     }
 
     private fun processExtraData() {
