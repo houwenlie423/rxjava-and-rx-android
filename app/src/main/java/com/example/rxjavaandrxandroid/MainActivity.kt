@@ -1,5 +1,6 @@
 package com.example.rxjavaandrxandroid
 
+import android.content.Intent
 import androidx.activity.viewModels
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
 import com.example.rxjavaandrxandroid.base.RxViewBindingActivity
@@ -17,5 +18,12 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
     override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
+    override fun init() {
+        binding.btnNavigate.setOnClickListener {
+            Intent(this, SecondaryActivity::class.java).also {
+                startActivity(it)
+            }
+        }
+    }
 
 }
