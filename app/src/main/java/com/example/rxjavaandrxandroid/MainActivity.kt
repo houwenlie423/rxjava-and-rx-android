@@ -40,7 +40,7 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
     override fun onNewIntent(intent: Intent?) {
         // #onNewIntent is not executed despite having singleTop launchMode for this activity, Intent sender needs to also addFlag Intent.FLAG_ACTIVITY_CLEAR_TOP
-        // See : https://issuetracker.google.com/issues/36928971
+        // See : https://issuetracker.google.com/issues/36928971 and  https://stackoverflow.com/a/39475230
         LogUtil.log("onNewIntent : $intent")
         super.onNewIntent(intent)
 
