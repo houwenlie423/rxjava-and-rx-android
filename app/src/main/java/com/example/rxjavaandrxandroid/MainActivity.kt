@@ -20,44 +20,6 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
     override fun inflateViewBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
     override fun init() {
-        // Due to bug described below, activity gets re-created and #onCreate gets executed again
-        LogUtil.log("onCreate : $intent")
-        binding.apply {
-            btnStay.setOnClickListener {
-                Intent(this@MainActivity, MainActivity::class.java).apply {
-                    putExtra("codeValue", "42069")
-                    startActivity(this)
-                }
-            }
-            btnNavigate.setOnClickListener {
-                Intent(this@MainActivity, SecondaryActivity::class.java).also {
-                    startActivity(it)
-                }
-            }
-        }
-        processExtraData()
+
     }
-
-    override fun onNewIntent(intent: Intent?) {
-        // #onNewIntent is not executed despite having singleTop launchMode for this activity, Intent sender needs to also addFlag Intent.FLAG_ACTIVITY_CLEAR_TOP
-        // See : https://issuetracker.google.com/issues/36928971 and  https://stackoverflow.com/a/39475230
-        LogUtil.log("onNewIntent : $intent")
-        super.onNewIntent(intent)
-
-        // Solution from : http://www.helloandroid.com/tutorials/communicating-between-running-activities
-        setIntent(intent)
-        processExtraData()
-    }
-
-    private fun processExtraData() {
-        intent?.let { intent ->
-            val codeValue = intent.getStringExtra("codeValue").orEmpty()
-            if (codeValue.isNotEmpty()) updateTextWithCodeValue(codeValue)
-        }
-    }
-
-    private fun updateTextWithCodeValue(codeValue: String) {
-        binding.tvTitle.text = codeValue
-    }
-
 }
