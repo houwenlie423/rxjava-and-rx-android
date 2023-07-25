@@ -11,7 +11,7 @@ object LogUtil {
 
     private const val TAG = "RxApplication"
 
-    fun log(message: String, addLineBreak: Boolean = true) {
+    fun log(message: String, addLineBreak: Boolean = false) {
         Log.d(TAG, message)
         if (addLineBreak) {
             Log.d(TAG, "------------------------------------")
