@@ -3,6 +3,7 @@ package com.example.rxjavaandrxandroid.usecases
 import com.example.rxjavaandrxandroid.api.FakeApi
 import com.example.rxjavaandrxandroid.models.FakeUser
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.flatMapIterable
 import javax.inject.Inject
 
 
@@ -16,8 +17,9 @@ class LoopChain @Inject constructor(
 
     fun getUsersConcurrently(): Observable<List<FakeUser>> {
         return fakeApi.getUserIds()
-            .flatMapIterable { it }
-            .flatMap { userId -> fakeApi.getUser(userId) }
+//            .flatMapIterable { it }
+            .flatMapIterable()
+            .concatMapEager { userId -> fakeApi.getUser(userId) }
             .toList()
             .toObservable()
     }

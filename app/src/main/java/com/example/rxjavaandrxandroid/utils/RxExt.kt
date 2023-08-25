@@ -7,7 +7,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 
 
@@ -44,21 +43,25 @@ fun <T> Observable<T>.subscribeByAutoDispose(
     })
 }
 
-inline fun <reified T> Observable<T>.execute(
+inline fun <reified T> Observable<T>.subscribeByLogAutoDispose(
     crossinline onSuccess: (T) -> Unit = {},
     crossinline onError: (Throwable) -> Unit = {},
     threadExecutor: Scheduler = Schedulers.io(),
-    postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
+    postThreadExecutor: Scheduler = AndroidSchedulers.mainThread(),
+    observableName: String = T::class.simpleName.orEmpty(),
 ) {
     this.applySchedulers(threadExecutor, postThreadExecutor)
         .subscribeByAutoDispose(
             onNext = {
-                LogUtil.log("[${T::class.simpleName}] Success = $it")
+                LogUtil.log("[$observableName] onNext = $it")
                 onSuccess(it)
             },
             onError = {
-                LogUtil.log("[${T::class.simpleName}] Error = $it")
+                LogUtil.log("[$observableName] onError = $it")
                 onError(it)
+            },
+            onComplete = {
+                LogUtil.log("[$observableName] onComplete")
             }
         )
 }
@@ -93,9 +96,10 @@ inline fun <reified T> Single<T>.execute(
     crossinline onSuccess: (T) -> Unit = {},
     crossinline onError: (Throwable) -> Unit = {},
     threadExecutor: Scheduler = Schedulers.io(),
-    postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
+    postThreadExecutor: Scheduler = AndroidSchedulers.mainThread(),
+    singleName: String = T::class.simpleName.orEmpty()
 ) {
-    this.toObservable().execute(onSuccess, onError, threadExecutor, postThreadExecutor)
+    this.toObservable().subscribeByLogAutoDispose(onSuccess, onError, threadExecutor, postThreadExecutor, singleName)
 }
 
 fun Completable.applySchedulers(

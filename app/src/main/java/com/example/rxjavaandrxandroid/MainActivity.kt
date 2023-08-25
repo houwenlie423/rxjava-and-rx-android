@@ -1,16 +1,15 @@
 package com.example.rxjavaandrxandroid
 
-import android.content.Intent
 import androidx.activity.viewModels
-import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
 import com.example.rxjavaandrxandroid.base.RxViewBindingActivity
+import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
 import com.example.rxjavaandrxandroid.utils.LogUtil
+import com.example.rxjavaandrxandroid.utils.applySchedulers
+import com.example.rxjavaandrxandroid.utils.subscribeByLogAutoDispose
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
+import io.reactivex.rxkotlin.flatMapIterable
+import kotlin.random.Random
 
 /**
  * @author Houwen Lie (houwenlie98@gmail.com)
@@ -26,35 +25,45 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
     override fun init() {
         binding.btnExecute.setOnClickListener {
-            getObservable()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { result ->
-                    LogUtil.log("final result thread = ${Thread.currentThread().name}")
-                    LogUtil.log("final result -- $result", addLineBreak = true)
+            LogUtil.log("Starting")
+//            INI BISA BROTHERS
+            getTopServiceKeys()
+                .flatMap { keys ->
+                    Observable.zip(
+                        keys.map { key ->
+                            getService(key)
+                                .onErrorReturnItem(Service(enable = false))
+                        }
+                    ) { results ->
+                        results.map { it as Service }
+                            .filter { it.enable }
+                    }
                 }
-                .addTo(disposeBag)
+                .onErrorReturnItem(emptyList())
+                .applySchedulers()
+                .subscribeByLogAutoDispose(observableName = "Service List")
         }
     }
 
-    private fun getValue(): Observable<Int> {
-        return Observable.timer(3L, TimeUnit.SECONDS)
-            .map {
-                LogUtil.log("getValue thread = ${Thread.currentThread().name}")
-                1
-            }
-    }
+   private fun getTopServiceKeys(): Observable<List<String>> {
+       return Observable.create { emitter -> emitter.onNext(listOf("request_payment", "product_catalog", "qris_business")) }
+   }
 
-    private fun getObservable(): Observable<String> {
+    private fun getService(key: String): Observable<Service> {
+//        return Observable.just(Service(id = Random.nextInt(), name = "Service - $key"))
         return Observable.create { emitter ->
-            getValue()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { num ->
-                    LogUtil.log("getValue subscribe thread = ${Thread.currentThread().name}")
-                    emitter.onNext("Value = $num")
-                }
-                .addTo(disposeBag)
+            if(key == "product_catalog") {
+                emitter.onError(NoSuchElementException("No such service exist"))
+                return@create
+            }
+            emitter.onNext(Service(id = Random.nextInt().toString(), name = "Service - $key", enable = true))
         }
     }
+
 }
+
+data class Service(
+    val id: String = "",
+    val name: String = "",
+    val enable: Boolean
+)

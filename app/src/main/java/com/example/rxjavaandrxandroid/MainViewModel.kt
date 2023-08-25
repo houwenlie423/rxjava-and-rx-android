@@ -1,14 +1,13 @@
 package com.example.rxjavaandrxandroid
 
-import android.util.Log
+import com.example.rxjavaandrxandroid.api.TypicodeApi
 import com.example.rxjavaandrxandroid.base.RxViewModel
-import com.example.rxjavaandrxandroid.usecases.HeavyOperation
 import com.example.rxjavaandrxandroid.usecases.LoopChain
+import com.example.rxjavaandrxandroid.utils.LogUtil
 import com.example.rxjavaandrxandroid.utils.applySchedulers
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.Observable
 import io.reactivex.rxkotlin.addTo
-import java.util.concurrent.TimeUnit
+import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 
@@ -19,8 +18,22 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val loopChain: LoopChain,
-    private val heavyOperation: HeavyOperation
+    private val typicodeApi: TypicodeApi
 ) : RxViewModel() {
 
+    fun getUsers() {
+        loopChain.getUsersConcurrentLyWithZip()
+            .applySchedulers()
+            .subscribeBy(
+                onNext = {
+                    LogUtil.log("Result = $it")
+                },
+                onError = {
+                    LogUtil.log("Error = $it")
+                }
+            )
+            .addTo(disposeBag)
+    }
 
 }
+
