@@ -4,11 +4,15 @@ import androidx.activity.viewModels
 import com.example.rxjavaandrxandroid.base.RxViewBindingActivity
 import com.example.rxjavaandrxandroid.databinding.ActivityMainBinding
 import com.example.rxjavaandrxandroid.usecases.LoopChain
+import com.example.rxjavaandrxandroid.utils.applySchedulers
+import com.example.rxjavaandrxandroid.utils.subscribeByAutoDispose
 import com.example.rxjavaandrxandroid.utils.subscribeByLog
+import com.example.rxjavaandrxandroid.utils.toSingleObservable
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -29,8 +33,15 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
 
 
     override fun init() {
+
+        val sourceObservable = Observable.create { emitter -> emitter.onNext(1) }
+
         binding.btnExecute.setOnClickListener {
-            Observable.timer()
+            sourceObservable
+                .timeout(3L, TimeUnit.SECONDS)
+                .applySchedulers()
+                .subscribeByLog()
+                .addTo(disposeBag)
         }
     }
 }

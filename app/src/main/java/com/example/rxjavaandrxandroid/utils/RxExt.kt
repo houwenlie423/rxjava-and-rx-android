@@ -33,10 +33,12 @@ fun <T> Observable<T>.subscribeByLog(): Disposable {
     )
 }
 
+fun <T> Observable<T>.toSingleObservable(): Observable<T> = this.take(1)
+
 fun <T> Observable<T>.subscribeByAutoDispose(
-    onNext: (T) -> Unit = {},
-    onError: (Throwable) -> Unit = {},
-    onComplete: () -> Unit = {}
+    onNext: (T) -> Unit,
+    onError: (Throwable) -> Unit,
+    onComplete: () -> Unit
 ) {
     this.subscribe(object : DisposableObserver<T>() {
         override fun onNext(t: T) {
@@ -55,6 +57,8 @@ fun <T> Observable<T>.subscribeByAutoDispose(
         }
     })
 }
+
+fun <T> Observable<T>.subscribeByAutoDispose(onNext: (T) -> Unit) = this.subscribeByAutoDispose(onNext, {}, {})
 /*
    Single<T> extensions
    ----------------------------------------------------------------------------------------
