@@ -23,13 +23,19 @@ class FakeApi @Inject constructor() {
         return Observable.fromCallable {
             LogUtil.log("getUserIds")
             listOf(1,2,3,4,5)
-        }.delay(Constants.MOCK_DELAY_SECONDS, TimeUnit.SECONDS)
+        }
+//            .delay(Constants.MOCK_DELAY_SECONDS, TimeUnit.SECONDS)
     }
 
     fun getUser(id: Int): Observable<FakeUser> {
-        return Observable.fromCallable {
+        return Observable.create { emitter ->
             LogUtil.log("getUser with id = $id")
-            FakeUser(id = id, name = "User #$id")
-        }.delay(Random.nextInt(1,5).toLong(), TimeUnit.SECONDS)
+            emitter.onNext(FakeUser(id = id, name = "User #$id"))
+            emitter.onComplete()
+        }
+//        return Observable.fromCallable {
+//            LogUtil.log("getUser with id = $id")
+//            FakeUser(id = id, name = "User #$id")
+//        }.delay(Random.nextInt(1,5).toLong(), TimeUnit.SECONDS)
     }
 }

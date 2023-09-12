@@ -5,6 +5,7 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
@@ -15,17 +16,29 @@ import io.reactivex.schedulers.Schedulers
  * @version RxExt, v 0.1 Fri 6/16/2023 7:13 PM by Houwen Lie
  */
 
+/*
+   Observable<T> extensions
+   ----------------------------------------------------------------------------------------
+ */
 fun <T> Observable<T>.applySchedulers(
     threadExecutor: Scheduler = Schedulers.io(),
     postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
 ): Observable<T> = this.subscribeOn(threadExecutor).observeOn(postThreadExecutor)
+
+fun <T> Observable<T>.subscribeByLog(): Disposable {
+    return this.subscribe(
+        { LogUtil.log("onNext = $it") },
+        { LogUtil.log("onError = $it") },
+        { LogUtil.log("onComplete") },
+    )
+}
 
 fun <T> Observable<T>.subscribeByAutoDispose(
     onNext: (T) -> Unit = {},
     onError: (Throwable) -> Unit = {},
     onComplete: () -> Unit = {}
 ) {
-    this.subscribe(object: DisposableObserver<T>() {
+    this.subscribe(object : DisposableObserver<T>() {
         override fun onNext(t: T) {
             onNext(t)
             dispose()
@@ -42,66 +55,28 @@ fun <T> Observable<T>.subscribeByAutoDispose(
         }
     })
 }
-
-inline fun <reified T> Observable<T>.subscribeByLogAutoDispose(
-    crossinline onSuccess: (T) -> Unit = {},
-    crossinline onError: (Throwable) -> Unit = {},
-    threadExecutor: Scheduler = Schedulers.io(),
-    postThreadExecutor: Scheduler = AndroidSchedulers.mainThread(),
-    observableName: String = T::class.simpleName.orEmpty(),
-) {
-    this.applySchedulers(threadExecutor, postThreadExecutor)
-        .subscribeByAutoDispose(
-            onNext = {
-                LogUtil.log("[$observableName] onNext = $it")
-                onSuccess(it)
-            },
-            onError = {
-                LogUtil.log("[$observableName] onError = $it")
-                onError(it)
-            },
-            onComplete = {
-                LogUtil.log("[$observableName] onComplete")
-            }
-        )
-}
-
-fun <T> Observable<T>.collectAsSingle(): Single<T> {
-    return Single.create { emitter ->
-        subscribe(object: DisposableObserver<T>() {
-            override fun onNext(t: T) {
-                emitter.onSuccess(t)
-                dispose()
-            }
-
-            override fun onError(e: Throwable) {
-                emitter.onError(e)
-                dispose()
-            }
-
-            override fun onComplete() {
-                dispose()
-            }
-
-        })
-    }
-}
+/*
+   Single<T> extensions
+   ----------------------------------------------------------------------------------------
+ */
 
 fun <T> Single<T>.applySchedulers(
     threadExecutor: Scheduler = Schedulers.io(),
     postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
 ) = this.subscribeOn(threadExecutor).observeOn(postThreadExecutor)
 
-inline fun <reified T> Single<T>.execute(
-    crossinline onSuccess: (T) -> Unit = {},
-    crossinline onError: (Throwable) -> Unit = {},
-    threadExecutor: Scheduler = Schedulers.io(),
-    postThreadExecutor: Scheduler = AndroidSchedulers.mainThread(),
-    singleName: String = T::class.simpleName.orEmpty()
-) {
-    this.toObservable().subscribeByLogAutoDispose(onSuccess, onError, threadExecutor, postThreadExecutor, singleName)
+fun <T> Single<T>.subscribeByLog(): Disposable {
+    return this.subscribe(
+        { LogUtil.log("onSuccess = $it") },
+        { LogUtil.log("onError = $it") },
+    )
 }
 
+
+/*
+   Completable extensions
+   ----------------------------------------------------------------------------------------
+ */
 fun Completable.applySchedulers(
     threadExecutor: Scheduler = Schedulers.io(),
     postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
