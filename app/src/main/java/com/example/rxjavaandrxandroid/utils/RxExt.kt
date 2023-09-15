@@ -1,5 +1,7 @@
 package com.example.rxjavaandrxandroid.utils
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -9,6 +11,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
+import javax.inject.Provider
 
 
 /**
@@ -31,6 +35,42 @@ fun <T> Observable<T>.subscribeByLog(): Disposable {
         { LogUtil.log("onError = $it") },
         { LogUtil.log("onComplete") },
     )
+}
+
+inline fun <reified T> Observable<T>.execute(
+    crossinline onSuccess: (T) -> Unit = {},
+    crossinline onError: (Throwable) -> Unit = {},
+    threadExecutor: Scheduler = Schedulers.io(),
+    postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
+) {
+    this.applySchedulers(threadExecutor, postThreadExecutor)
+        .subscribeByAutoDispose(
+            onNext = {
+                LogUtil.log("[${T::class.simpleName}] Success = $it")
+                onSuccess(it)
+            },
+            onError = {
+                LogUtil.log("[${T::class.simpleName}] Error = $it")
+                onError(it)
+            },
+            onComplete = {}
+        )
+}
+class ViewModelFactory @Inject constructor(
+    private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val creator = creators[modelClass] ?: creators.entries.firstOrNull {
+            modelClass.isAssignableFrom(it.key)
+        }?.value ?: throw IllegalArgumentException("unknown model class $modelClass")
+        try {
+            @Suppress("UNCHECKED_CAST")
+            return creator.get() as T
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+
+    }
 }
 
 fun <T> Observable<T>.toSingleObservable(): Observable<T> = this.take(1)
@@ -58,7 +98,7 @@ fun <T> Observable<T>.subscribeByAutoDispose(
     })
 }
 
-fun <T> Observable<T>.subscribeByAutoDispose(onNext: (T) -> Unit) = this.subscribeByAutoDispose(onNext, {}, {})
+//fun <T> Observable<T>.subscribeByAutoDispose(onNext: (T) -> Unit, onErr) = this.subscribeByAutoDispose(onNext, {}, {})
 /*
    Single<T> extensions
    ----------------------------------------------------------------------------------------
