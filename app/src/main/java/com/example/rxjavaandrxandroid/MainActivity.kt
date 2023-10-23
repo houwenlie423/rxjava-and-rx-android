@@ -43,6 +43,6 @@ class MainActivity : RxViewBindingActivity<ActivityMainBinding>() {
                 .subscribeByLog()
                 .addTo(disposeBag)
         }
-        println("fake commit ammend 123")
+        println("fake commit ammend")
     }
 }
