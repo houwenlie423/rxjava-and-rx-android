@@ -1,6 +1,7 @@
 package com.example.rxjavaandrxandroid.utils
 
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -9,6 +10,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
+import kotlin.math.pow
 
 
 /**
@@ -20,6 +23,36 @@ import io.reactivex.schedulers.Schedulers
    Observable<T> extensions
    ----------------------------------------------------------------------------------------
  */
+
+enum class RetryBackOffStrategy { CONSTANT, ADDITIONAL, EXPONENTIAL }
+
+fun <T> Single<T>.retry(
+    condition: (Throwable) -> Boolean,
+    onEach: (Int) -> Unit = {},
+    maxRetry: Int = 3,
+    initialDelay: Long = 500L,
+    maxDelay: Long = 3000L,
+    timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    backOffStrategy: RetryBackOffStrategy = RetryBackOffStrategy.EXPONENTIAL
+): Single<T> = retryWhen { flowable ->
+    var retryCount = 0
+    flowable.flatMap { error ->
+        if (retryCount < maxRetry && condition(error)) {
+            val delayMultiplier = when(backOffStrategy) {
+                RetryBackOffStrategy.CONSTANT -> 1L
+                RetryBackOffStrategy.ADDITIONAL -> (retryCount + 1).toLong()
+                RetryBackOffStrategy.EXPONENTIAL -> (2.0.pow(retryCount.toDouble())).toLong()
+            }
+            val delay = (initialDelay * delayMultiplier).coerceAtMost(maxDelay)
+
+            onEach(++retryCount)
+            return@flatMap Flowable.timer(delay, timeUnit)
+        } else {
+            return@flatMap Flowable.error(error)
+        }
+    }
+}
+
 fun <T> Observable<T>.applySchedulers(
     threadExecutor: Scheduler = Schedulers.io(),
     postThreadExecutor: Scheduler = AndroidSchedulers.mainThread()
@@ -35,7 +68,7 @@ fun <T> Observable<T>.subscribeByLog(): Disposable {
 
 fun <T> Observable<T>.toSingleObservable(): Observable<T> = this.take(1)
 
-fun <T> Observable<T>.subscribeByAutoDispose(
+fun <T: Any> Observable<T>.subscribeByAutoDispose(
     onNext: (T) -> Unit,
     onError: (Throwable) -> Unit,
     onComplete: () -> Unit
@@ -58,7 +91,7 @@ fun <T> Observable<T>.subscribeByAutoDispose(
     })
 }
 
-fun <T> Observable<T>.subscribeByAutoDispose(onNext: (T) -> Unit) = this.subscribeByAutoDispose(onNext, {}, {})
+fun <T: Any> Observable<T>.subscribeByAutoDispose(onNext: (T) -> Unit) = this.subscribeByAutoDispose(onNext, {}, {})
 /*
    Single<T> extensions
    ----------------------------------------------------------------------------------------
